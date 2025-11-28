@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EduTech AI Platform
 
-## Getting Started
+A full-stack EdTech platform with AI-powered course generation, built with Next.js, MongoDB, and Google Gemini.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Student Portal**: Browse courses, enroll, track progress, and chat with educators.
+- **Educator Portal**: Create courses with AI assistance (syllabus & content), manage students.
+- **AI Integration**: Uses Google Gemini to generate course syllabi and lesson content.
+- **Authentication**: Secure role-based auth (Student/Educator/Admin) using JWT and HTTP-only cookies.
+- **Chat**: Real-time-like chat for course Q&A.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Prerequisites
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 18+
+- MongoDB (Local or Atlas)
+- Google Gemini API Key
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup
 
-## Learn More
+1.  **Install Dependencies**
 
-To learn more about Next.js, take a look at the following resources:
+    ```bash
+    npm install
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2.  **Environment Variables**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    Copy `env.example` to `.env` and fill in your details:
 
-## Deploy on Vercel
+    ```bash
+    cp env.example .env
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    Update `.env`:
+    - `MONGODB_URI`: Your MongoDB connection string.
+    - `JWT_SECRET`: A long random string.
+    - `GEMINI_API_KEY`: Your Google Gemini API key.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3.  **Run Development Server**
+
+    ```bash
+    npm run dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000).
+
+## Project Structure
+
+- `src/app`: Next.js App Router pages and API routes.
+- `src/lib`: Utilities (DB connection, Auth, AI).
+- `src/models`: Mongoose models (User, Course, etc.).
+- `src/middleware.ts`: Route protection middleware.
+
+## Usage
+
+1.  **Sign Up**: Create an account. Choose "Educator" to create courses.
+2.  **Create Course**: Go to Educator Dashboard -> Create New Course. Fill details -> Generate Syllabus -> Generate Content -> Publish.
+3.  **Enroll**: Log out or use incognito, sign up as "Student". Browse courses and enroll.
+4.  **Learn**: Access the learning dashboard, view content, and use the chat.
+
+## Deployment
+
+- **Vercel**: Recommended for Next.js. Add environment variables in Vercel project settings.
+- **MongoDB Atlas**: Use for production database.
