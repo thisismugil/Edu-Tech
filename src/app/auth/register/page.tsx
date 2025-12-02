@@ -17,9 +17,53 @@ export default function RegisterPage() {
         bio: '',
     });
     const [error, setError] = useState('');
+    const [otp, setOtp] = useState('');
+    const [otpSent, setOtpSent] = useState(false);
+    const [timer, setTimer] = useState(0);
+    const [isSendingOtp, setIsSendingOtp] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSendOtp = async () => {
+        if (!formData.email) {
+            setError('Please enter your email address');
+            return;
+        }
+
+        setIsSendingOtp(true);
+        setError('');
+
+        try {
+            const res = await fetch('/api/auth/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: formData.email, type: 'signup' }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to send OTP');
+            }
+
+            setOtpSent(true);
+            setTimer(60);
+            const interval = setInterval(() => {
+                setTimer((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(interval);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setIsSendingOtp(false);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -32,6 +76,7 @@ export default function RegisterPage() {
                 email: formData.email,
                 password: formData.password,
                 role,
+                otp,
             };
 
             if (role === 'educator') {
@@ -149,12 +194,49 @@ export default function RegisterPage() {
                         )}
                     </div>
 
+                    {otpSent && (
+                        <div className="rounded-md shadow-sm -space-y-px mb-4">
+                            <input
+                                name="otp"
+                                type="text"
+                                required
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                                placeholder="Enter Verification Code"
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                            />
+                            <div className="text-sm text-gray-500 mt-1">
+                                {timer > 0 ? `Resend OTP in ${timer}s` : (
+                                    <button
+                                        type="button"
+                                        onClick={handleSendOtp}
+                                        className="text-primary hover:text-primary/80 font-medium"
+                                    >
+                                        Resend OTP
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {!otpSent && (
+                        <button
+                            type="button"
+                            onClick={handleSendOtp}
+                            disabled={isSendingOtp}
+                            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+                        >
+                            {isSendingOtp ? 'Sending...' : 'Verify Email'}
+                        </button>
+                    )}
+
                     {error && <div className="text-red-500 text-sm text-center">{error}</div>}
 
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            disabled={!otpSent}
+                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Sign up
                         </button>

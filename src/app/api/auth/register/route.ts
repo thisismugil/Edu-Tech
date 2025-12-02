@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import EducatorProfile from '@/models/EducatorProfile';
+import OTP from '@/models/OTP';
 import { hashPassword, createSession } from '@/lib/auth';
 import { z } from 'zod';
 
@@ -15,6 +16,7 @@ const registerSchema = z.object({
     institution: z.string().optional(),
     qualification: z.string().optional(),
     bio: z.string().optional(),
+    otp: z.string().length(6),
 });
 
 export async function POST(request: Request) {
@@ -30,7 +32,16 @@ export async function POST(request: Request) {
             );
         }
 
-        const { name, email, password, role, experienceYears, institution, qualification, bio } = result.data;
+        const { name, email, password, role, experienceYears, institution, qualification, bio, otp } = result.data;
+
+        // Verify OTP
+        const otpRecord = await OTP.findOne({ email, otp });
+        if (!otpRecord) {
+            return NextResponse.json(
+                { error: 'Invalid or expired OTP' },
+                { status: 400 }
+            );
+        }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -70,6 +81,9 @@ export async function POST(request: Request) {
 
         // Auto login after register
         await createSession({ userId: user._id.toString(), role: user.role, name: user.name });
+
+        // Delete OTP after successful registration
+        await OTP.deleteOne({ _id: otpRecord._id });
 
         return NextResponse.json({ success: true, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
     } catch (error: any) {
