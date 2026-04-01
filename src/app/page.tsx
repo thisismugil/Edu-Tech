@@ -55,7 +55,7 @@ export default function Home() {
                 </div>
                 <h3 className="mt-6 text-lg font-medium text-gray-900">AI Course Generation</h3>
                 <p className="mt-2 text-base text-gray-500">
-                  Educators can generate detailed syllabi and lesson content instantly using Gemini AI.
+                  Educators can generate detailed syllabi and lesson content instantly.
                 </p>
               </div>
               <div className="text-center">

@@ -1,12 +1,12 @@
 # EduTech AI Platform
 
-A full-stack EdTech platform with AI-powered course generation, built with Next.js, MongoDB, and Google Gemini.
+A full-stack EdTech platform with AI-powered course generation, built with Next.js, MongoDB, and NVIDIA AI (Llama 3.3).
 
 ## Features
 
 - **Student Portal**: Browse courses, enroll, track progress, and chat with educators.
 - **Educator Portal**: Create courses with AI assistance (syllabus & content), manage students.
-- **AI Integration**: Uses Google Gemini to generate course syllabi and lesson content.
+- **AI Integration**: Uses NVIDIA API (model `meta/llama-3.3-70b-instruct`) to generate course syllabi and lesson content.
 - **Authentication**: Secure role-based auth (Student/Educator/Admin) using JWT and HTTP-only cookies.
 - **Chat**: Real-time-like chat for course Q&A.
 
@@ -14,7 +14,7 @@ A full-stack EdTech platform with AI-powered course generation, built with Next.
 
 - Node.js 18+
 - MongoDB (Local or Atlas)
-- Google Gemini API Key
+- NVIDIA API Key
 
 ## Setup
 
@@ -35,7 +35,7 @@ A full-stack EdTech platform with AI-powered course generation, built with Next.
     Update `.env`:
     - `MONGODB_URI`: Your MongoDB connection string.
     - `JWT_SECRET`: A long random string.
-    - `GEMINI_API_KEY`: Your Google Gemini API key.
+    - `NVIDIA_API_KEY`: Your NVIDIA API key.
 
 3.  **Run Development Server**
 

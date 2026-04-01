@@ -4,6 +4,7 @@ import dbConnect from '@/lib/db';
 import Course from '@/models/Course';
 import Enrollment from '@/models/Enrollment';
 import User from '@/models/User';
+import ChatMessage from '@/models/ChatMessage';
 import { verifySession } from '@/lib/auth';
 
 export async function GET() {
@@ -48,9 +49,12 @@ export async function GET() {
         enrollments.forEach((e: any) => allStudentIds.add(e.studentId.toString()));
     }
 
+    const unreadMessagesCount = await ChatMessage.countDocuments({ receiverId: session.userId, isRead: false });
+
     return NextResponse.json({
         courses: coursesWithStats,
         totalCourses: courses.length,
-        totalStudents: allStudentIds.size
+        totalStudents: allStudentIds.size,
+        unreadMessagesCount
     });
 }
